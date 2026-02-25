@@ -24,7 +24,7 @@ export const createTeamMember = async (req, res) => {
 // 📄 Get All Team Members
 export const getTeamMembers = async (req, res) => {
   try {
-    const members = await Team.find().sort({ createdAt: -1 });
+    const members = await Team.find();
     res.json(members);
   } catch (error) {
     res.status(500).json({ message: error.message });
