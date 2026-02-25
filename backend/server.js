@@ -12,7 +12,6 @@ import teamRoutes from "./routes/teamRoutes.js";
 
 dotenv.config();
 connectDB();
-import express from 'express';
 const app = express();
 
 app.use(cors());
