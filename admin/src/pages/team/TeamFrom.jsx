@@ -18,7 +18,7 @@ const TeamForm = () => {
   // ✅ Fetch Single Member (Edit Mode)
   useEffect(() => {
     if (id) {
-      fetch(`${config.backendBaseUrl}/api/team`)
+      fetch(`${config.backendBaseUrl}/api/team/add`)
         .then((res) => res.json())
         .then((data) => {
           const member = data.find((m) => m._id === id);
