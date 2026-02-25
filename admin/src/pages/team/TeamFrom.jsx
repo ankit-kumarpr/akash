@@ -7,7 +7,6 @@ const TeamForm = () => {
   const [position, setPosition] = useState("");
   const [bio, setBio] = useState("");
   const [linkedin, setLinkedin] = useState("");
-  // const [facebook, setFacebook] = useState("");
   const [instagram, setInstagram] = useState("");
   const [image, setImage] = useState(null);
 
@@ -18,7 +17,7 @@ const TeamForm = () => {
   // ✅ Fetch Single Member (Edit Mode)
   useEffect(() => {
     if (id) {
-      fetch(`${config.backendBaseUrl}/api/team/add`)
+      fetch(`${config.backendBaseUrl}/api/team`)
         .then((res) => res.json())
         .then((data) => {
           const member = data.find((m) => m._id === id);
@@ -27,9 +26,11 @@ const TeamForm = () => {
             setPosition(member.position || "");
             setBio(member.bio || "");
             setLinkedin(member.linkedin || "");
-            // setFacebook(member.facebook || "");
             setInstagram(member.instagram || "");
           }
+        })
+        .catch((err) => {
+          console.error("Fetch error:", err);
         });
     }
   }, [id]);
@@ -42,38 +43,50 @@ const TeamForm = () => {
     formData.append("position", position);
     formData.append("bio", bio);
     formData.append("linkedin", linkedin);
-    // formData.append("facebook", facebook);
     formData.append("instagram", instagram);
     if (image) formData.append("image", image);
 
-    // 🔥 FIXED URL
-    const url = id
-      ? `${config.backendBaseUrl}/api/team/team-update/${id}`
-      : `${config.backendBaseUrl}/api/team`;
+    try {
+      // ✅ FIXED URLs
+      const url = id
+        ? `${config.backendBaseUrl}/api/team/team-update/${id}`
+        : `${config.backendBaseUrl}/api/team/add`;
 
-    const method = id ? "PUT" : "POST";
+      const method = id ? "PUT" : "POST";
 
-    const res = await fetch(url, {
-      method,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
+      const res = await fetch(url, {
+        method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-    const data = await res.json();
+      // ✅ Safe JSON Parse
+      let data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        alert("Server returned invalid response");
+        return;
+      }
 
-    if (!res.ok) {
-      alert(data.message);
-      return;
+      if (!res.ok) {
+        alert(data?.message || "Something went wrong");
+        return;
+      }
+
+      alert(
+        id
+          ? "Team Member Updated Successfully"
+          : "Team Member Created Successfully"
+      );
+
+      navigate("/team-list");
+    } catch (error) {
+      console.error("Submit Error:", error);
+      alert("Server Error. Please try again.");
     }
-
-    alert(
-      id
-        ? "Team Member Updated Successfully"
-        : "Team Member Created Successfully",
-    );
-    navigate("/team-list");
   };
 
   return (
@@ -111,13 +124,6 @@ const TeamForm = () => {
           onChange={(e) => setLinkedin(e.target.value)}
         />
 
-        {/* <input
-          className="form-control mb-3"
-          placeholder="Facebook URL"
-          value={facebook}
-          onChange={e => setFacebook(e.target.value)}
-        /> */}
-
         <input
           className="form-control mb-3"
           placeholder="Instagram URL"
@@ -129,7 +135,7 @@ const TeamForm = () => {
           type="file"
           className="form-control mb-3"
           onChange={(e) => setImage(e.target.files[0])}
-          required={!id} // required only for create
+          required={!id}
         />
 
         <button className="btn btn-primary">
