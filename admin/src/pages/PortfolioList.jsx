@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
 
@@ -6,11 +6,11 @@ const PortfolioList = () => {
     const [portfolios, setPortfolios] = useState([]);
     const navigate = useNavigate();
 
-    const fetchPortfolios = async () => {
+    const fetchPortfolios = useCallback(async () => {
         const res = await fetch(`${config.backendBaseUrl}/api/portfolio`);
         const data = await res.json();
         setPortfolios(data);
-    };
+    }, []);
 
     const deletePortfolio = async (id) => {
         if (!window.confirm("Delete this portfolio?")) return;
@@ -29,7 +29,7 @@ const PortfolioList = () => {
 
     useEffect(() => {
         fetchPortfolios();
-    }, []);
+    }, [fetchPortfolios]);
 
     return (
         <div className="container mt-5">

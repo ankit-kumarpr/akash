@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../../config";
 
@@ -7,11 +7,11 @@ const TeamList = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  const fetchMembers = async () => {
+  const fetchMembers = useCallback(async () => {
     const res = await fetch(`${config.backendBaseUrl}/api/team`);
     const data = await res.json();
     setMembers(data);
-  };
+  }, []);
 
   const deleteMember = async (id) => {
     if (!window.confirm("Delete this member?")) return;
@@ -28,7 +28,7 @@ const TeamList = () => {
 
   useEffect(() => {
     fetchMembers();
-  }, []);
+  }, [fetchMembers]);
 
   return (
     <div className="container mt-5">

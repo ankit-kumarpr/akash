@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
 
@@ -6,11 +6,11 @@ const BlogList = () => {
     const [blogs, setBlogs] = useState([]);
     const navigate = useNavigate();
 
-    const fetchBlogs = async () => {
+    const fetchBlogs = useCallback(async () => {
         const res = await fetch(`${config.backendBaseUrl}/api/blogs`);
         const data = await res.json();
         setBlogs(data);
-    };
+    }, []);
 
     const deleteBlog = async (id) => {
         if (!window.confirm("Delete this blog?")) return;
@@ -24,7 +24,7 @@ const BlogList = () => {
 
     useEffect(() => {
         fetchBlogs();
-    }, []);
+    }, [fetchBlogs]);
 
     // const navigate = useNavigate()
 

@@ -14,7 +14,7 @@ const PrivateRoute = ({ children }) => {
             return;
         }
 
-        fetch(`${config}/api/auth/check-token`, {
+        fetch(`${config.backendBaseUrl}/api/auth/check-token`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

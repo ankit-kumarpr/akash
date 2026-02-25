@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../../config";
 // import config from "../config";
@@ -8,11 +8,11 @@ const CareerList = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
-    const fetchJobs = async () => {
+    const fetchJobs = useCallback(async () => {
         const res = await fetch(`${config.backendBaseUrl}/api/career`);
         const data = await res.json();
         setJobs(data);
-    };
+    }, []);
 
     const deleteJob = async (id) => {
         if (!window.confirm("Delete this job?")) return;
@@ -29,7 +29,7 @@ const CareerList = () => {
 
     useEffect(() => {
         fetchJobs();
-    }, []);
+    }, [fetchJobs]);
 
     return (
         <div className="container mt-5">

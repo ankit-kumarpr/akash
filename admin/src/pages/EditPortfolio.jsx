@@ -11,16 +11,17 @@ const EditPortfolio = () => {
     const [link, setLink] = useState("");
     const [image, setImage] = useState(null);
     const [oldImage, setOldImage] = useState("");
-
     useEffect(() => {
         fetch(`${config.backendBaseUrl}/api/portfolio`)
             .then(res => res.json())
             .then(data => {
                 const portfolio = data.find(p => p._id === id);
-                setTitle(portfolio.title);
-                setDescription(portfolio.description);
-                setLink(portfolio.link);
-                setOldImage(portfolio.image);
+                if (portfolio) {
+                    setTitle(portfolio.title);
+                    setDescription(portfolio.description);
+                    setLink(portfolio.link);
+                    setOldImage(portfolio.image);
+                }
             });
     }, [id]);
 

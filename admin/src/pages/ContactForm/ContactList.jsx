@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import config from "../../config";
 import { useNavigate } from "react-router-dom";
 // import config from "../config";
@@ -7,7 +7,7 @@ const ContactList = () => {
     const [contacts, setContacts] = useState([]);
     const token = localStorage.getItem("token");
 
-    const fetchContacts = async () => {
+    const fetchContacts = useCallback(async () => {
         const res = await fetch(`${config.backendBaseUrl}/api/contact`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -16,7 +16,7 @@ const ContactList = () => {
 
         const data = await res.json();
         setContacts(data);
-    };
+    }, [token]);
 
     const deleteMessage = async (id) => {
         if (!window.confirm("Delete this message?")) return;
@@ -33,7 +33,7 @@ const ContactList = () => {
 
     useEffect(() => {
         fetchContacts();
-    }, []);
+    }, [fetchContacts]);
 
     const navigate = useNavigate()
 
